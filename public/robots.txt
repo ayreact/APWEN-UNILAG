@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://apwenunilag.vercel.app/sitemap.xml

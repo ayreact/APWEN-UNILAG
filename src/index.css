@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #7D2586;
+  --color-accent: #B037BC;
+  --color-background-light: #FFFFFF;
+  --color-background-dark: #1e131f;
+
+  --font-display: "Inter", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
+
+  --animate-fade-in-up: fadeInUp 0.5s ease-out forwards;
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-fade-in-down: fadeInDown 0.3s ease-out forwards;
+}
+
+@layer base {
+  body {
+    @apply font-display text-[#181019] bg-background-light dark:bg-background-dark overflow-x-hidden;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
