@@ -35,7 +35,7 @@ export const events: Event[] = [
         title: "She-Engineer 30% Club Workshop Session & Mentorship Initiative",
         category: "Workshop",
         image:
-            "she-engineer-30%-club-workshop-session-mentorship-initiative.jpg",
+            "she-engineer-workshop.jpg",
         alt: "Female student presenting a robotics project",
         description: "Hands-on experience with modern tech.",
     },
