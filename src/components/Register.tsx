@@ -5,13 +5,36 @@ import { Loader2 } from 'lucide-react';
 export default function Register() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setErrorMessage(null);
 
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+        const rawData = Object.fromEntries(formData.entries());
+
+        // Transform data to match backend requirements
+        const data = {
+            fullName: rawData.fullName,
+            email: rawData.email,
+            matricNumber: rawData.matricNumber,
+            faculty: rawData.faculty,
+            department: rawData.department,
+            level: rawData.level,
+            phone: rawData.phone,
+            gender: rawData.gender,
+            dateOfBirth: rawData.dateOfBirth,
+            session: rawData.session,
+            role: rawData.role,
+            comment: rawData.comment // Optional, but kept if user wants it tracked or we need to drop it dependent on backend strictness. Assuming backend ignores extra fields or we can leave it.
+            // Note: The example request didn't show 'comment', but it's good to keep on UI. 
+            // If backend rejects unknown fields, we should remove it from the payload.
+            // However, based on typical express/mongo setups, extra fields are usually just ignored unless explicitly stripped by validator schema.
+            // I'll include it in the payload based on "make request work", if strict backend helper function needed I'd filter it.
+        };
+
         const apiUrl = import.meta.env.VITE_API_URL;
 
         console.group('📝 Form Submission Debug Log');
@@ -19,7 +42,7 @@ export default function Register() {
         console.log('📦 Data:', data);
 
         try {
-            const response = await fetch(apiUrl, {
+            const response = await fetch(`${apiUrl}/members`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,19 +55,28 @@ export default function Register() {
             console.log('📡 Response Status:', response.status);
             console.log('📩 Response Data:', responseData);
 
-            if (!response.ok) {
-                console.warn('⚠️ API returned an error, but showing success UI as requested.');
-            } else {
-                console.log('✅ Submission Successful');
+            if (!response.ok || (responseData && responseData.success === false)) {
+                // Extract error message
+                let msg = "An error occurred during registration.";
+                if (responseData) {
+                    if (responseData.message) msg = responseData.message;
+                    if (responseData.error) msg = responseData.error;
+                    if (responseData.errors && Array.isArray(responseData.errors)) {
+                        msg = responseData.errors.join(', ');
+                    }
+                }
+                throw new Error(msg);
             }
 
-        } catch (error) {
+            console.log('✅ Submission Successful');
+            setIsSuccess(true);
+
+        } catch (error: any) {
             console.error('❌ Network/Submission Error:', error);
-            console.warn('⚠️ Showing success UI despite error as requested.');
+            setErrorMessage(error.message || "Something went wrong. Please try again.");
         } finally {
             console.groupEnd();
             setIsSubmitting(false);
-            setIsSuccess(true);
         }
     };
 
@@ -120,14 +152,20 @@ export default function Register() {
 
                     <div className="md:w-7/12 p-6 md:p-12 bg-gray-50 dark:bg-[#1e131f]">
                         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                            {errorMessage && (
+                                <div className="p-4 bg-red-100 text-red-700 border border-red-200 rounded-lg text-sm">
+                                    <strong>Error:</strong> {errorMessage}
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="name">Full Name</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="fullName">Full Name</label>
                                     <input
                                         required
-                                        name="name"
+                                        name="fullName"
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                                        id="name" placeholder="Enter your full name" type="text"
+                                        id="fullName" placeholder="Enter your full name" type="text"
                                     />
                                 </div>
 
@@ -152,6 +190,16 @@ export default function Register() {
                                 </div>
 
                                 <div>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="matricNumber">Matric Number</label>
+                                    <input
+                                        required
+                                        name="matricNumber"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
+                                        id="matricNumber" placeholder="190404023" type="text"
+                                    />
+                                </div>
+
+                                <div>
                                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="faculty">Faculty</label>
                                     <input
                                         required
@@ -162,12 +210,12 @@ export default function Register() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="dept">Department</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="department">Department</label>
                                     <select
                                         required
-                                        name="dept"
+                                        name="department"
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                                        id="dept"
+                                        id="department"
                                         defaultValue=""
                                     >
                                         <option value="" disabled>Select Department</option>
@@ -211,13 +259,42 @@ export default function Register() {
                                     />
                                 </div>
 
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="gender">Gender</label>
+                                    <select
+                                        required
+                                        name="gender"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
+                                        id="gender"
+                                        defaultValue="Female"
+                                    >
+                                        <option value="Female">Female</option>
+                                        <option value="Male">Male</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="role">Role</label>
+                                    <select
+                                        required
+                                        name="role"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
+                                        id="role"
+                                        defaultValue="member"
+                                    >
+                                        <option value="member">Member</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+
+
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="birthday">Birthday</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1" htmlFor="dateOfBirth">Birthday</label>
                                     <input
                                         required
-                                        name="birthday"
+                                        name="dateOfBirth"
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#2a1b2b] text-gray-900 dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                                        id="birthday" type="date"
+                                        id="dateOfBirth" type="date"
                                     />
                                 </div>
 
