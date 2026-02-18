@@ -40,7 +40,7 @@ export default function Footer() {
                         <a className="size-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-accent transition-colors" href="https://instagram.com/apwenunilag" aria-label="Instagram">
                             <FaInstagram className="text-sm" />
                         </a>
-                        <a className="size-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-accent transition-colors" href="https://api.whatsapp.com/send?phone=659" aria-label="WhatsApp">
+                        <a className="size-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-accent transition-colors" href="https://chat.whatsapp.com/EnLYlRw6KylL5mnw9zXNKC" aria-label="WhatsApp">
                             <FaWhatsapp className="text-sm" />
                         </a>
                         <a className="size-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-accent transition-colors" href="https://www.linkedin.com/company/apwen-unilag-collegiate" aria-label="LinkedIn">

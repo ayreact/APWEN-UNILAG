@@ -95,12 +95,20 @@ export default function Register() {
                             <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">
                                 Thank you for registering. We have received your details and will be in touch shortly. Welcome to the community!
                             </p>
-                            <button
-                                onClick={() => window.location.reload()}
-                                className="px-8 py-3 bg-accent text-white font-bold rounded-xl hover:bg-[#a02eac] transition-all transform hover:scale-[1.02] shadow-lg cursor-pointer"
-                            >
-                                Back to Home
-                            </button>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="w-full sm:w-auto px-8 py-3 bg-accent text-white font-bold rounded-xl hover:bg-[#a02eac] transition-all transform hover:scale-[1.02] shadow-lg cursor-pointer"
+                                >
+                                    Back to Home
+                                </button>
+                                <button
+                                    onClick={() => window.open("https://chat.whatsapp.com/EnLYlRw6KylL5mnw9zXNKC")}
+                                    className="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-all transform hover:scale-[1.02] shadow-lg cursor-pointer"
+                                >
+                                    Join WhatsApp Community
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
